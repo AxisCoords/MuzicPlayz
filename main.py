@@ -26,7 +26,7 @@ def selectFolder() -> str:
 
 running = True
 while running:
-    screen.fill((0, 0, 0))
+    screen.fill((20, 20, 20))
 
     events = pygame.event.get()
     
