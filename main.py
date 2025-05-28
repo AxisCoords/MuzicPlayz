@@ -1,7 +1,9 @@
+import random
 import pygame, sys, json
 import tkinter as tk
+import glob
 from tkinter import filedialog
-import button
+from button import Button
 
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.init()
@@ -14,19 +16,25 @@ icons = pygame.Surface((256, 256))
 icons.fill((0, 0, 0))
 pygame.display.set_icon(icons)
 
+def setMusics():
+    global musicFiles, dataObj
+    musicFiles = glob.glob(dataObj["directory"] + "/*.mp3")
+    musicFiles = [f.replace("\\", "/") for f in musicFiles]
+
 DATA_FILE_PATH = "data.json"
 dataObj = {
     "paused": True,
-    "directory": ""
+    "directory": "" 
 }
 try:
     with open(DATA_FILE_PATH, "r") as file:
         dataObj = json.load(file)
+        setMusics()
 except:
     with open(DATA_FILE_PATH, "w") as file:
         json.dump(dataObj, file, indent=4)
 
-openFileBtn: button.Button = button.Button(pygame.Rect((400 - 180) / 2, 400 - 30 - 15, 180, 30), 3)
+openFileBtn: Button = Button(pygame.Rect((400 - 180) / 2, 400 - 30 - 15, 180, 30), 3)
 
 def selectFolder() -> str:
     root = tk.Tk()
@@ -34,6 +42,11 @@ def selectFolder() -> str:
     folderPath = filedialog.askdirectory()
     root.destroy()
     return folderPath
+
+# TODO: Play songs
+pygame.mixer.music.load(random.choice(musicFiles))
+pygame.mixer.music.play()
+pygame.mixer.music.set_volume(0.1)
 
 running = True
 while running:
@@ -46,7 +59,10 @@ while running:
     
     if openFileBtn.isClicked(events):
         dataObj["directory"] = selectFolder()
+        setMusics()
         print("[INFO]: Chosen directory '" + dataObj["directory"] + "'")
+
+        print(musicFiles)
 
     openFileBtn.draw(screen, "OPEN FOLDER", pygame.Color(255, 255, 255), pygame.Color(0, 0, 0))
 
