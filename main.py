@@ -44,9 +44,17 @@ def selectFolder() -> str:
     return folderPath
 
 # TODO: Play songs
-pygame.mixer.music.load(random.choice(musicFiles))
-pygame.mixer.music.play()
-pygame.mixer.music.set_volume(0.1)
+def playSong():
+    if len(musicFiles) > 1:
+        rand = random.choice(musicFiles)
+
+        pygame.mixer.music.load(rand)
+        pygame.mixer.music.play()
+        pygame.mixer.music.set_volume(0.2)
+
+        print("Playing: " + rand)
+    else:
+        print("[WARNING]: No songs found")
 
 running = True
 while running:
@@ -61,6 +69,8 @@ while running:
         dataObj["directory"] = selectFolder()
         setMusics()
         print("[INFO]: Chosen directory '" + dataObj["directory"] + "'")
+
+        playSong()
 
         print(musicFiles)
 
